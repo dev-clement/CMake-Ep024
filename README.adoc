@@ -1,0 +1,45 @@
+= CMake - Testing the main Function (GoogleTest/Catch2) 
+We are going to test the idea of how to test the main function according to the previous articles related to testing framework. 
+:toc: 
+:sectnums: 
+
+== Introduction 
+
+In the last article for using `CMake` with both `GoogleTest` and `Catch2` test, we explore both of the followings libraries, although we can test the project, the `main` function that is linked to the executable of your own isn't, we know that this file contains the `main`, cannot be tested, however there is a way. The problem that is related to the `main` this function is that it's the entry point of the program, however, if someone change something inside, that could break the program, but we cannot test it because there isn't 2 main functions in a program, and the testing program has already a `main` function.
+
+== In order to test the `main` function 
+
+The best way to test the content of the `main` function is by wrapping up all the content of the `main` inside a function that will let you test its content. 
+
+=== Example 
+Supposed we took the last main function, we can then take all the code to wrap it in a function on its own in order to have a simple `main` function like the following: 
+
+```cpp 
+int main () { 
+    return run_app(0, nullptr); 
+} 
+``` 
+
+In the above example, we are just wrapping around all the content of the `main` function inside a `run_app` function, and we call it and even return its result, that means the `main` function is just a placeholder right now, so the `run_app` will look like this: 
+
+==== The run_app function 
+
+```cpp 
+#include <iostream> 
+#include "calculator.hpp" 
+
+int run_app(int argc, char **argv) { 
+    Calculator calc; 
+    std::cout << "add(10,4): " << calc.add(10,4) << std::endl;
+    std::cout << "sub(10,4): " << calc.sub(10,4) << std::endl;
+    std::cout << "mul(10,4): " << calc.mul(10,4) << std::endl;
+    std::cout << "div(10,4): " << calc.div(10,4) << std::endl;
+    std::cout << "mod(10,4): " << calc.mod(10,4) << std::endl;
+    return EXIT_SUCCESS; 
+} 
+``` 
+The file `run_app.cpp` is describe above, it contains the same code that was present before in the `main` function. 
+
+===== Split the main appart 
+
+The above function won't give anything related to the code, except the Separation Of Concern, that means, the `run_app` function can be tested, rather than the `main` being a specific keyword for all program.
